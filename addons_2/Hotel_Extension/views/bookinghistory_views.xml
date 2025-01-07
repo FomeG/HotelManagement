@@ -70,7 +70,7 @@
     <!-- Menu Item -->
     <menuitem id="menu_booking_history"
         name="Booking History"
-        parent="ss34.menu_hotel_root"
+        parent="Hotel_Management.menu_hotel_root"
         action="action_booking_history"
         sequence="50" />
 </odoo>

@@ -21,7 +21,7 @@
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['ss34'],
+    'depends': ['Hotel_Management'],
 
     # always loaded
     'data': [

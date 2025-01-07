@@ -13,7 +13,7 @@
         </field>
     </record>
 
-<!-- groups="ss34.group_hotel_test" -->
+<!-- groups="Hotel_Management.group_hotel_test" -->
     <!-- Form View -->
     <record id="hotel_room_feature_form_view" model="ir.ui.view">
         <field name="name">hotel.room.feature.form</field>

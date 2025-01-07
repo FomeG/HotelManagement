@@ -4,7 +4,7 @@
         <field name="name">Hotel Booking Report</field>
         <field name="model">hotel.management</field>
         <field name="report_type">qweb-pdf</field>
-        <field name="report_name">ss34.hotel_report_template</field>
+        <field name="report_name">Hotel_Management.hotel_report_template</field>
         <field name="binding_type">action</field>
         <field name="binding_model_id" ref="model_hotel_management" />
     </record>

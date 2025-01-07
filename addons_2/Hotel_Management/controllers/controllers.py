@@ -17,14 +17,14 @@ from odoo.http import Controller, route, request
 
 #     @http.route('/ss34/ss34/objects', auth='public')
 #     def list(self, **kw):
-#         return http.request.render('ss34.listing', {
+#         return http.request.render('Hotel_Management.listing', {
 #             'root': '/ss34/ss34',
-#             'objects': http.request.env['ss34.ss34'].search([]),
+#             'objects': http.request.env['Hotel_Management.ss34'].search([]),
 #         })
 
-#     @http.route('/ss34/ss34/objects/<model("ss34.ss34"):obj>', auth='public')
+#     @http.route('/ss34/ss34/objects/<model("Hotel_Management.ss34"):obj>', auth='public')
 #     def object(self, obj, **kw):
-#         return http.request.render('ss34.object', {
+#         return http.request.render('Hotel_Management.object', {
 #             'object': obj
 #         })
 
