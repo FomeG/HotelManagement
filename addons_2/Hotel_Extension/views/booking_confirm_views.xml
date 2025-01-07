@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hotel_booking_form_view_inherited" model="ir.ui.view">
+        <field name="name">hotel.booking.form.inherited</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="ss34.hotel_booking_form_view" />
+        <field name="arch" type="xml">
+            <button name="action_confirm" position="attributes">
+                <!-- Modify button attributes as needed -->
+                <attribute name="string">Confirm _ Test</attribute>
+                <attribute name="class">btn-danger</attribute>
+            </button>
+        </field>
+    </record>
+
+
+</odoo>

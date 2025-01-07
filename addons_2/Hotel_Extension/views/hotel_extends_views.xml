@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_form_inherited" model="ir.ui.view">
+        <field name="name">hotel.management.form.inherited</field>
+        <field name="model">hotel.management</field>
+        <field name="inherit_id" ref="ss34.hotel_management_form_view" />
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Booking History">
+                    <field name="booking_history_ids" readonly="1">
+                        <list>
+                            <field name="name" />
+                            <field name="customer_name" />
+                            <field name="room_id" />
+                            <field name="check_in" />
+                            <field name="check_out" />
+                            <field name="state" />
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo> 

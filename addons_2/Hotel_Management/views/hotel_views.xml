@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="hotel_management_tree_view" model="ir.ui.view">
+        <field name="name">hotel.management.tree</field>
+        <field name="model">hotel.management</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="address" />
+                <field name="floor_count" />
+                <field name="room_count" />
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="hotel_management_form_view" model="ir.ui.view">
+        <field name="name">hotel.management.form</field>
+        <field name="model">hotel.management</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="%(action_hotel_report)d" type="action" string="Print Report" class="btn-primary" />
+                </header>
+                <sheet>
+                    <group>
+                        <field name="name" />
+                        <field name="address" />
+                        <field name="floor_count" />
+                        <field name="room_count" />
+                    </group>
+                    <notebook>
+                        <page string="Rooms">
+                            <field name="room_ids" />
+                        </page>
+                    </notebook>
+                </sheet>
+
+               <chatter/>
+
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="hotel_management_search_view" model="ir.ui.view">
+        <field name="name">hotel.management.search</field>
+        <field name="model">hotel.management</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="address" />
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_hotel_management" model="ir.actions.act_window">
+        <field name="name">Hotels</field>
+        <field name="res_model">hotel.management</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem
+        id="menu_hotel_root"
+        name="Hotel Management"
+        sequence="10" />
+
+    <!-- Sub Menu Item -->
+    <menuitem
+        id="menu_hotel_management"
+        name="Hotels"
+        parent="menu_hotel_root"
+        action="action_hotel_management"
+        sequence="1" />
+</odoo>

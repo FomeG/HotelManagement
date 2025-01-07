@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Tree View -->
+    <record id="hotel_room_feature_tree_view" model="ir.ui.view">
+        <field name="name">hotel.room.feature.tree</field>
+        <field name="model">hotel.room.feature</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="description" />
+                <field name="feature_type" />
+            </list>
+        </field>
+    </record>
+
+<!-- groups="ss34.group_hotel_test" -->
+    <!-- Form View -->
+    <record id="hotel_room_feature_form_view" model="ir.ui.view">
+        <field name="name">hotel.room.feature.form</field>
+        <field name="model">hotel.room.feature</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"  />
+                        <field name="description" />
+                        <field name="feature_type" />
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hotel_room_feature_search_view" model="ir.ui.view">
+        <field name="name">hotel.room.feature.search</field>
+        <field name="model">hotel.room.feature</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="feature_type" />
+
+                <group>
+                    <filter name="filter_comfort"
+                        string="Comfort Features"
+                        domain="[('feature_type', '=', 'comfort')]" />
+                    <filter name="filter_luxury"
+                        string="Luxury Features"
+                        domain="[('feature_type', '=', 'luxury')]" />
+                    <filter name="filter_basic"
+                        string="Basic Features"
+                        domain="[('feature_type', '=', 'basic')]" />
+
+                    <!-- Group By options -->
+                    <filter name="feature_type" string="Group by Feature Type"
+                        context="{'group_by': 'feature_type'}" />
+
+
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action -->
+    <record id="action_hotel_room_feature" model="ir.actions.act_window">
+        <field name="name">Room Features</field>
+        <field name="res_model">hotel.room.feature</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="hotel_room_feature_search_view"></field>
+    </record>
+
+    <!-- Menu Item -->
+    <menuitem id="menu_hotel_room_feature"
+        name="Room Features"
+        parent="menu_hotel_root"
+        action="action_hotel_room_feature"
+        sequence="40" />
+
+</odoo>

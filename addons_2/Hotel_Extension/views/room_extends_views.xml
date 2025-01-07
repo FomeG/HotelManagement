@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Tree View -->
+    <record id="view_hotel_room_tree_inherited" model="ir.ui.view">
+        <field name="name">hotel.room.tree.inherited</field>
+        <field name="model">hotel.room</field>
+        <field name="inherit_id" ref="ss34.hotel_room_tree_view"/>
+        <field name="arch" type="xml">
+            <field name="state" position="before">
+                <field name="room_size"/>
+                <field name="max_p_room"/>
+                <field name="allow_smoking"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- kế thừa lại form view -->
+    <record id="view_hotel_room_form_inherited" model="ir.ui.view">
+        <field name="name">hotel.room.form.inherited</field>
+        <field name="model">hotel.room</field>
+        <!-- ref đến module.tên view.xml -->
+        <field name="inherit_id" ref="ss34.hotel_room_form_view"/>
+        <field name="arch" type="xml">
+
+
+            <!-- <group>
+                <group>
+                    <field name="hotel_id" />
+                    <field name="hotel_address" />
+                    <field name="name" />
+                </group>
+                <group>
+                    <field name="bed_type" />
+                    <field name="price" />
+                    <field name="state" />
+                </group>
+            </group> -->
+
+            <!-- group[2] như ở trên, bedtype,prce,state -->
+
+
+            <xpath expr="//group[2]" position="inside">
+                <field name="room_size"/>
+                <field name="max_p_room"/>
+                <field name="allow_smoking"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>
