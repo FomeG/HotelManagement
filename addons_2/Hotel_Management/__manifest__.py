@@ -18,13 +18,14 @@ Hotel management system with room management functionality
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['mail'],
+    'depends': ['mail','hr'],
 
     # always loaded
     'data': [
-        'security/security.xml',
-        'security/rules.xml',
+        'security/security_3.xml',
+        'security/rules_2.xml',
         'security/ir.model.access.csv',
+        
         'views/report_action.xml',
         
         'views/hotel_views.xml',
@@ -40,7 +41,7 @@ Hotel management system with room management functionality
     ],
     # only loaded in demonstration mode
     'demo': [
-        'demo/demo.xml',
+        
     ],
     
     'installable': True,

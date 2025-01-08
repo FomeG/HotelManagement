@@ -23,3 +23,49 @@
             <!-- Thêm những người dùng thuộc nhóm quyền admin vào Quyền này -->
             <field name="users" eval="[(4, ref('base.user_admin'))]" />
         </record>
+
+
+
+
+SECURITY.XML DEFAULT (SS3+4+5)
+<odoo>
+    <data>
+        <!--  Hotel employee Group - Lowest level  -->
+        <record id="group_hotel_employee" model="res.groups">
+            <field name="name">Hotel employee</field>
+            <field name="category_id" ref="base.module_category_services" />
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]" />
+        </record>
+
+
+        <!--  Hotel Manager Group - Inherits employee rights  -->
+        <record id="group_hotel_manager" model="res.groups">
+            <field name="name">Hotel Manager</field>
+            <field name="category_id" ref="base.module_category_services" />
+            <!--  Kế thừa lễ tân -> để có tất cả quyền của lễ tân   -->
+            <field name="implied_ids"
+                eval="[ (4, ref('base.group_user')), (4, ref('group_hotel_employee')) ]" />
+        </record>
+
+
+        
+        <!--  Hotel Admin Group - Inherits Manager rights  -->
+        <!--  res.groups là model dùng để tạo và quản lý các nhóm người dùng trong Odoo  -->
+        <record id="group_hotel_admin" model="res.groups">
+            <!--  Tên hiển thị của nhóm quyền  -->
+            <field name="name">Hotel Admin</field>
+            <!--  Phân loại nhóm quyền này vào mục Services trong phần cài đặt  -->
+            <field name="category_id" ref="base.module_category_services" />
+            <!--  Kế thừa các quyền cơ bản của Internal User   -->
+            <!--  kiểu admin sẽ có tất cả các quyền của thằng nhân viên + quản lý)  -->
+            <!--  eval="[(4, ref('...'))]" là cú pháp để thêm record vào quan hệ many2many  -->
+            <!--  Tức là base.group_user này nó còn có nhiều các bản ghi khác của các quyền ở các
+            module khác   -->
+            <!--  Kế thừa quản lý -> để có tất cả quyền của quản lý   -->
+            <field name="implied_ids"
+                eval="[ (4, ref('base.group_user')), (4, ref('group_hotel_manager')) ]" />
+            <!--  Thêm những người dùng thuộc nhóm quyền admin vào Quyền này  -->
+            <field name="users" eval="[(4, ref('base.user_admin'))]" />
+        </record>
+    </data>
+</odoo>
