@@ -19,15 +19,16 @@ class HotelManagement(models.Model):
         tracking=True,
     )
     
+    
     employee_ids = fields.Many2many(
         'hr.employee',
         'hotel_employee_rel',
         'hotel_id',
         'employee_id',
         string='Nhân Viên',
-        # domain="[('parent_id', '=', manager_id), ('id', '!=', manager_id), ('user_id.groups_id', 'in', [%(Hotel_Management.group_hotel_employee)d])]",
-        tracking=True
+        tracking=True,
     )  
+
 
     _sql_constraints = [
         ('name_uniq', 'unique(name)', 'Mã KS phải là duy nhất!')

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_template_booking_confirmation" model="mail.template">
+            <field name="name">Booking Confirmation</field>
+            <field name="model_id" ref="workflow.model_hotel_booking_test"/>
+            <field name="email_from">fomeg04@gmail.com</field>
+            <field name="subject">Booking Confirmation: {{object.name}}</field>
+            <field name="email_to">{{object.email}}</field>
+            <field name="body_html" type="html">
+                <div>
+                    <p>Dear {{object.customer_name}},</p>
+                    <p>Your booking {{object.name}} has been confirmed.</p>
+                    <p>Check-in: {{object.check_in}}</p>
+                    <p>Check-out: {{object.check_out}}</p>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>
