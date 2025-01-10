@@ -18,31 +18,44 @@ Hotel management system with room management functionality
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['mail','hr'],
+    'depends': ['mail','hr', 'web'],
 
     # always loaded
     'data': [
+        
         'security/security_3.xml',
         'security/rules_2.xml',
         'security/ir.model.access.csv',
         
         'views/report_action.xml',
         
+        
         'views/hotel_views.xml',
         'views/room_views.xml',
         'views/feature_views.xml',
         'views/booking_views.xml',
+        'views/booking_pending.xml',
         
         
-        'report/hotel_report_template.xml'
+        'report/hotel_report_template.xml',
         
+        
+        'data/email_config.xml',
+        'data/email_template.xml',
+        
+        'data/cronjob.xml',
+        
+        
+        
+        'data/server_action.xml',
         
         
     ],
+    
+  
+    
     # only loaded in demonstration mode
-    'demo': [
-        
-    ],
+    'demo': [],
     
     'installable': True,
     'application': True,

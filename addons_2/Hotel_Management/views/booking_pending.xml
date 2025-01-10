@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="hotel_booking_pending_list_view" model="ir.ui.view">
+        <field name="name">hotel.booking.pending.list</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name" />
+                <field name="customer_name" />
+                <field name="booking_date" />
+                <field name="hotel_id" />
+                <field name="room_type" />
+                <field name="room_id" />
+                <field name="check_in" />
+                <field name="check_out" />
+                <field name="state" widget="badge" />
+            </list>
+        </field>
+    </record>
+
+
+    <!-- Search View for Pending Bookings -->
+    <record id="hotel_booking_pending_search_view" model="ir.ui.view">
+        <field name="name">hotel.booking.pending.search</field>
+        <field name="model">hotel.booking</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name" />
+                <field name="customer_name" />
+                <field name="hotel_id" />
+                <field name="room_id" />
+                <filter string="New Bookings" name="draft_bookings"
+                    domain="[('state', '=', 'draft')]" />
+                <filter string="Confirmed Bookings" name="confirmed_bookings"
+                    domain="[('state', '=', 'confirmed')]" />
+                <group expand="0" string="Group By">
+                    <filter string="Status" name="group_by_state" context="{'group_by': 'state'}" />
+                    <filter string="Hotel" name="group_by_hotel" context="{'group_by': 'hotel_id'}" />
+                </group>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- Action for pending bookings with default filter -->
+    <record id="action_hotel_booking_pending" model="ir.actions.act_window">
+        <field name="name">Pending Bookings</field>
+        <field name="res_model">hotel.booking</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="hotel_booking_pending_list_view" />
+        <field name="search_view_id" ref="hotel_booking_pending_search_view" />
+        <field name="domain">[('state', '=', 'draft')]</field>
+        <field name="context">{
+            'search_default_draft_bookings': 1,
+            'default_state': 'draft'
+            }</field>
+    </record>
+
+
+    <!-- Menu item for pending bookings -->
+    <menuitem id="menu_hotel_booking_pending"
+        name="Pending Bookings"
+        parent="menu_hotel_root"
+        action="action_hotel_booking_pending"
+        sequence="35" />
+</odoo>

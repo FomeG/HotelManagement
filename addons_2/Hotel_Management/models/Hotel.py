@@ -34,6 +34,10 @@ class HotelManagement(models.Model):
         ('name_uniq', 'unique(name)', 'Mã KS phải là duy nhất!')
     ]
 
+
+    
+    # region Hotel Validation
+    
     # @api.constrains('manager_id')
     # def _check_manager(self):
     #     for hotel in self:
@@ -72,7 +76,6 @@ class HotelManagement(models.Model):
                         'Các nhân viên sau không thuộc quyền quản lý của %s: %s'
                      % (record.manager_id.name, ', '.join(invalid_employees.mapped('name'))))
             
-            
     # @api.onchange('manager_id')
     # def _onchange_manager_id(self):
     #     group_hotel_manager = self.env.ref('Hotel_Management.group_hotel_manager')
@@ -87,3 +90,20 @@ class HotelManagement(models.Model):
     #             'manager_id': [('id', 'in', employees.ids)]
     #         }
     #     }
+            
+            
+            
+            
+    # endregion Hotel Validation
+    
+
+        
+        
+        
+        
+            
+    
+    
+    
+    
+   

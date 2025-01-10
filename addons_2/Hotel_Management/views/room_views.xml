@@ -10,6 +10,7 @@
                 <field name="feature_ids" widget="many2many_tags" options="{'no_create': True}" />
                 <field name="bed_type" />
                 <field name="price" />
+                <field name="last_booking_date" />
                 <field name="state" />
             </list>
         </field>
@@ -27,6 +28,7 @@
                             <field name="hotel_id" />
                             <field name="hotel_address" />
                             <field name="name" />
+                            <field name="last_booking_date" />
                         </group>
                         <group>
                             <field name="bed_type" />

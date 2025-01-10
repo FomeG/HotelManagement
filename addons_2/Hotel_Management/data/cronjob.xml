@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- <record id="cron_check_unrented_rooms" model="ir.cron">
+        <field name="name">Check Unrented Rooms</field>
+        <field name="model_id" ref="model_hotel_room" />
+        <field name="state">code</field>
+        <field name="code">model.cron_check_unrented_rooms()</field>
+        <field name="interval_number">7</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall"
+            eval="(datetime.now() + timedelta(minutes=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="active" eval="False" />
+        <field name="user_id" ref="base.user_admin" />
+    </record> -->
+
+
+    <record id="automation_check_unbooked_rooms" model="ir.cron">
+        <field name="name">Check Unbooked Rooms</field>
+        <field name="model_id" ref="model_hotel_room" />
+        <field name="state">code</field>
+        <field name="code">model.check_unbooked_rooms()</field>
+        <field name="interval_number">7</field>
+        <field name="interval_type">days</field>
+        <field name="nextcall"
+            eval="(datetime.now() + timedelta(days=1)).strftime('%Y-%m-%d %H:%M:%S')" />
+        <field name="active" eval="False" />
+    </record>
+
+</odoo>

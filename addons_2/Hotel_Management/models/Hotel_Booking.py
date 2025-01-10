@@ -30,6 +30,7 @@ class HotelBooking(models.Model):
         ('confirmed', 'Confirmed')  # Status đã xác nhận
     ], string='Status', default='draft')  # Mặc định là draft khi mới tạo
 
+    #region Booking Validate
     
     # Check valid date check-in/out
     @api.constrains('check_in', 'check_out')
@@ -67,8 +68,6 @@ class HotelBooking(models.Model):
                     raise ValidationError('Phòng này đã được đặt trong khoảng thời gian bạn chọn!')
             
             
-            
-            
 
     def _create_booking_history(self, record):
         self.env['hotel.booking.history'].create({
@@ -79,25 +78,34 @@ class HotelBooking(models.Model):
             'check_out': record.check_out,
         })
     
-        
-        
+
+    #endregion
+    
     # Func xác nhận book phòng
+    # def action_confirm(self):
+    #     for record in self.sudo(): 
+    #         if record.state == 'draft':
+    #             record.state = 'confirmed'
+    #             if record.room_id:
+    #                 record.room_id.state = 'booked'
+    #     return True
+    
+    
+    
     def action_confirm(self):
         for record in self.sudo(): 
-            # Check nếu status = draft
             if record.state == 'draft':
-                # Update status thành confirmed
                 record.state = 'confirmed'
                 if record.room_id:
-                    # self._create_booking_history(record)
                     record.room_id.state = 'booked'
+                    # Trigger recompute last_booking_date
+                    record.room_id._compute_last_booking_date()
         return True
-
     
     
     
     
-     # Override phương thức unlink để xử lý khi xóa booking
+    # Override phương thức unlink để xử lý khi xóa booking
     def unlink(self):
         for record in self:
             # Nếu booking đã confirmed và có phòng được đặt
@@ -106,5 +114,24 @@ class HotelBooking(models.Model):
                 record.room_id.state = 'available'
         # Gọi phương thức unlink của lớp cha để xóa bản ghi
         return super(HotelBooking, self).unlink()
+    
+    
+    # Add these methods to the HotelBooking class:
+
+    def write(self, vals):
+        # Override write method to handle state changes
+        result = super(HotelBooking, self).write(vals)
+        if 'state' in vals and vals['state'] == 'confirmed':
+            for record in self:
+                if record.room_id:
+                    record.room_id.state = 'booked'
+        return result
+
+    def action_mass_confirm(self):
+        # Method for mass confirmation
+        for record in self:
+            if record.state == 'draft':
+                record.action_confirm()
+        return True
     
     

@@ -13,7 +13,7 @@
                 <field name="hotel_id" />
                 <field name="room_type" />
                 <field name="room_id" />
-                <field name="state" />
+                <field name="state" widget="badge"/>
             </list>
         </field>
     </record>

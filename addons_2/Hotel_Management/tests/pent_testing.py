@@ -177,6 +177,7 @@ class TestHotelManagementSecurity(TransactionCase):
             'hotel.booking search',
             'Prevented'
         )
+        
 
     def test_mass_assignment(self):
         """Test if employee can change important hotel data"""
@@ -191,6 +192,8 @@ class TestHotelManagementSecurity(TransactionCase):
                 f'Hotel {self.hotel.name}',
                 'Access Denied'
             )
+
+
 
     def test_rate_limiting(self):
         """Test if someone is making too many requests too quickly"""
@@ -212,3 +215,100 @@ class TestHotelManagementSecurity(TransactionCase):
             f'{attempts} requests in {duration:.2f} seconds',
             'Monitored'
         )
+        
+        
+    def test_password_policy(self):
+        """Test password complexity requirements"""
+        # Try to create user with weak password
+        with self.assertRaises(ValidationError):
+            weak_user = self.env['res.users'].create({
+                'name': 'Weak Password User',
+                'login': 'weak_user',
+                'password': '123', # Too short/simple
+                'groups_id': [(4, self.env.ref('Hotel_Management.group_hotel_employee').id)]
+            })
+            self._log_security_event(
+                'Weak Password Attempt',
+                'System',
+                'User Creation',
+                'Prevented'
+            )
+
+
+
+    def test_session_management(self):
+        """Test session timeout and concurrent login restrictions"""
+        # Simulate session creation
+        session = self.env['hotel.session'].create({
+            'user_id': self.employee_user.id,
+            'login_time': datetime.now() - timedelta(hours=3), # Session older than timeout
+            'last_activity': datetime.now() - timedelta(hours=2)
+        })
+        
+        # Check if session is expired (assuming 1 hour timeout)
+        self.assertTrue(session.is_expired())
+        self._log_security_event(
+            'Session Management',
+            self.employee_user.name,
+            'Session Timeout',
+            'Enforced'
+        )
+
+
+
+    def test_sensitive_data_access(self):
+        """Test access to sensitive customer data"""
+        # Create booking with sensitive data
+        booking = self.env['hotel.booking'].create({
+            'name': 'Sensitive Booking',
+            'customer_name': 'Test Customer',
+            'hotel_id': self.hotel.id,
+            'room_id': self.room.id,
+            'check_in': datetime.now().date(),
+            'check_out': (datetime.now() + timedelta(days=1)).date(),
+        })
+
+        # Try to access sensitive fields as employee
+        with self.assertRaises(AccessError):
+            sensitive_data = booking.with_user(self.employee_user).read(['name'])
+            self._log_security_event(
+                'Sensitive Data Access Attempt',
+                self.employee_user.name,
+                f'Credit Card Data for Booking {booking.name}',
+                'Access Denied'
+            )
+            
+            
+
+    def test_brute_force_prevention(self):
+        """Test protection against brute force login attempts"""
+        max_attempts = 5
+        attempts = 0
+        
+        # Simulate multiple failed login attempts
+        while attempts < max_attempts:
+            try:
+                self.env['res.users'].authenticate(
+                    self.env.cr.dbname,
+                    'employee_user',
+                    'wrong_password',
+                    {}
+                )
+            except Exception:
+                attempts += 1
+                self._log_security_event(
+                    'Failed Login Attempt',
+                    'employee_user',
+                    f'Attempt {attempts}/{max_attempts}',
+                    'Blocked'
+                )
+                
+                
+        # Verify account is temporarily locked
+        with self.assertRaises(AccessError):
+            self.env['res.users'].authenticate(
+                self.env.cr.dbname,
+                'employee_user',
+                'test123',
+                {}
+            )

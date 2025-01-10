@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data noupdate="1">
+    <data>
+
+
         <record id="email_template_booking_confirmation" model="mail.template">
             <field name="name">Booking Confirmation</field>
-            <field name="model_id" ref="workflow.model_hotel_booking_test"/>
+            <field name="model_id" ref="workflow.model_hotel_booking_test" />
             <field name="email_from">fomeg04@gmail.com</field>
             <field name="subject">Booking Confirmation: {{object.name}}</field>
             <field name="email_to">{{object.email}}</field>
@@ -16,5 +18,26 @@
                 </div>
             </field>
         </record>
+
+
+        <!-- Sửa template unrented rooms alert -->
+        <record id="email_template_unrented_rooms_alert" model="mail.template">
+            <field name="name">Unrented Rooms Alert</field>
+            <field name="model_id" ref="model_hotel_room"/>
+            <field name="subject">Alert: Unrented Rooms Report - ${object.env.context.get('room_count')} rooms not booked</field>
+            <field name="email_from">fomeg04@gmail.com</field>
+            <field name="email_to">nghiavuongnickphu1@gmail.com</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; padding: 0 15px 0 15px;">
+                    <h3 style="color: #1e3de4;">Unrented Rooms Alert</h3>
+                    <p>The following rooms have had no bookings in the past 7 days:</p>
+                    ${object.env.context.get('rooms_html')|safe}
+                    <p style="color: #666666; font-size: 12px;">Generated at: ${object.env.context.get('current_time')}</p>
+                </div>
+            </field>
+        </record>
+
+
+
     </data>
 </odoo>
