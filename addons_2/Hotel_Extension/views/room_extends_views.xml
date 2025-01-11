@@ -4,12 +4,12 @@
     <record id="view_hotel_room_tree_inherited" model="ir.ui.view">
         <field name="name">hotel.room.tree.inherited</field>
         <field name="model">hotel.room</field>
-        <field name="inherit_id" ref="Hotel_Management.hotel_room_tree_view"/>
+        <field name="inherit_id" ref="Hotel_Management.hotel_room_tree_view" />
         <field name="arch" type="xml">
             <field name="state" position="before">
-                <field name="room_size"/>
-                <field name="max_p_room"/>
-                <field name="allow_smoking"/>
+                <field name="room_size" />
+                <field name="max_p_room" />
+                <field name="allow_smoking" />
             </field>
         </field>
     </record>
@@ -19,7 +19,7 @@
         <field name="name">hotel.room.form.inherited</field>
         <field name="model">hotel.room</field>
         <!-- ref đến module.tên view.xml -->
-        <field name="inherit_id" ref="Hotel_Management.hotel_room_form_view"/>
+        <field name="inherit_id" ref="Hotel_Management.hotel_room_form_view" />
         <field name="arch" type="xml">
 
 
@@ -40,9 +40,9 @@
 
 
             <xpath expr="//group[2]" position="inside">
-                <field name="room_size"/>
-                <field name="max_p_room"/>
-                <field name="allow_smoking"/>
+                <field name="room_size" />
+                <field name="max_p_room" />
+                <field name="allow_smoking" />
             </xpath>
 
         </field>

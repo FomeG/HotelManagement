@@ -5,6 +5,7 @@
     <record id="hotel_booking_tree_view" model="ir.ui.view">
         <field name="name">hotel.booking.tree</field>
         <field name="model">hotel.booking</field>
+        <field name="priority">10</field> 
         <field name="arch" type="xml">
             <list>
                 <field name="name" />
@@ -13,7 +14,9 @@
                 <field name="hotel_id" />
                 <field name="room_type" />
                 <field name="room_id" />
-                <field name="state" widget="badge"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'confirmed'"
+                    decoration-warning="state == 'draft'" />
             </list>
         </field>
     </record>
@@ -25,12 +28,21 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+
                     <button name="action_confirm"
                         string="Confirm"
                         type="object"
                         class="btn-danger"
                         invisible="state != 'draft'" />
+
+                    <button name="action_open_payment_wizard"
+                        string="Thanh toán"
+                        type="object"
+                        class="btn-primary"
+                        invisible="payment_status != 'unpaid'" />
+
                     <field name="state" widget="statusbar" />
+
                 </header>
                 <sheet>
                     <group>
@@ -38,6 +50,9 @@
                             <field name="name" />
                             <field name="customer_name" />
                             <field name="booking_date" />
+                            <field name="payment_status" />
+                            <field name="payment_date" />
+                            <field name="payment_amount" />
                         </group>
                         <group>
                             <field name="hotel_id" />
@@ -48,6 +63,7 @@
                         </group>
                     </group>
                 </sheet>
+                <chatter />
             </form>
         </field>
     </record>
@@ -60,11 +76,7 @@
     </record>
 
 
-    <menuitem id="menu_hotel_booking"
-        name="Bookings"
-        parent="menu_hotel_root"
-        action="action_hotel_booking"
-        sequence="30" />
+
 
 
 </odoo>

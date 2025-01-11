@@ -4,8 +4,9 @@
     <record id="hotel_booking_pending_list_view" model="ir.ui.view">
         <field name="name">hotel.booking.pending.list</field>
         <field name="model">hotel.booking</field>
+        <field name="priority">20</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="0">
                 <field name="name" />
                 <field name="customer_name" />
                 <field name="booking_date" />
@@ -14,7 +15,9 @@
                 <field name="room_id" />
                 <field name="check_in" />
                 <field name="check_out" />
-                <field name="state" widget="badge" />
+                <field name="state" widget="badge"
+                    decoration-success="state == 'confirmed'"
+                    decoration-warning="state == 'draft'" />
             </list>
         </field>
     </record>
@@ -58,10 +61,4 @@
     </record>
 
 
-    <!-- Menu item for pending bookings -->
-    <menuitem id="menu_hotel_booking_pending"
-        name="Pending Bookings"
-        parent="menu_hotel_root"
-        action="action_hotel_booking_pending"
-        sequence="35" />
 </odoo>

@@ -2,20 +2,28 @@ from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
 class HotelBooking(models.Model):
-    # Setup info cơ bản của model nè
-    _name = 'hotel.booking'  # Tên technical của model
-    _description = 'Hotel Booking'  # Title hiển thị
+    _name = 'hotel.booking'
+    _description = 'Hotel Booking'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Define các field cần thiết nè
-    name = fields.Char('Booking Description', required=True)               # Mã book phòng (bắt buộc)
-    customer_name = fields.Char('Customer Name')                           # Tên khách book
-    booking_date = fields.Date('Booking Date', default=fields.Date.today)  # Ngày đky, auto là today
-    hotel_id = fields.Many2one('hotel.management', 'Hotel')                # Link tới hotel (kiểu many2one)
-    room_type = fields.Selection([
-        ('single', 'Single'),  # Giường đơn
-        ('double', 'Double')   # Giường đôi
-    ], string='Room Type', required=True)  # Type giường (bắt buộc)
+
+    # Add new payment fields
+    payment_status = fields.Selection([
+        ('unpaid', 'Unpaid'),
+        ('paid', 'Paid')
+    ], string='Payment Status', default='unpaid', readonly=True)
     
+    payment_date = fields.Datetime('Payment Date', readonly=True)
+    payment_amount = fields.Float('Payment Amount', readonly=True)
+
+    name = fields.Char('Booking Description', required=True, tracking=True)
+    customer_name = fields.Char('Customer Name', tracking=True)
+    booking_date = fields.Date('Booking Date', default=fields.Date.today)
+    hotel_id = fields.Many2one('hotel.management', 'Hotel')
+    room_type = fields.Selection([
+        ('single', 'Single'),
+        ('double', 'Double')
+    ], string='Room Type', required=True)
     
     room_id = fields.Many2one(
         'hotel.room', 
@@ -23,38 +31,31 @@ class HotelBooking(models.Model):
         domain="[('hotel_id', '=', hotel_id), ('state', '=', 'available'), ('bed_type', '=', room_type)]"
     )
     
-    check_in = fields.Date('Check-in Date')  # Ngày vào
-    check_out = fields.Date('Check-out Date')  # Ngày out
+    check_in = fields.Date('Check-in Date')
+    check_out = fields.Date('Check-out Date')
     state = fields.Selection([
-        ('draft', 'New'),      # Status mới book
-        ('confirmed', 'Confirmed')  # Status đã xác nhận
-    ], string='Status', default='draft')  # Mặc định là draft khi mới tạo
+        ('draft', 'New'),
+        ('confirmed', 'Confirmed')
+    ], string='Status', default='draft')
 
     #region Booking Validate
     
-    # Check valid date check-in/out
     @api.constrains('check_in', 'check_out')
     def _check_dates(self):
         for rec in self:
-            # Check nếu date in > date out -> báo lỗi
             if rec.check_in and rec.check_out and rec.check_in > rec.check_out:
                 raise ValidationError('Ngày check in không được lớn hơn ngày check out!')
             
-            
-    # Validate giá không được nhỏ hơn 0
     @api.constrains('price')
     def _check_price(self):
         for rec in self:
             if rec.price < 0:
                 raise ValidationError('Giá không đượcn nhỏ hơn 0')
             
-    
-    # Validate không được book trùng phòng trong cùng thời gian
     @api.constrains('room_id', 'check_in', 'check_out', 'state')
     def _check_room_availability(self):
         for rec in self:
             if rec.room_id and rec.check_in and rec.check_out and rec.state == 'confirmed':
-                # Tìm các booking khác của cùng phòng đó (trừ booking hiện tại)
                 domain = [
                     ('id', '!=', rec.id),
                     ('room_id', '=', rec.room_id.id),
@@ -67,59 +68,34 @@ class HotelBooking(models.Model):
                 if overlapping_bookings:
                     raise ValidationError('Phòng này đã được đặt trong khoảng thời gian bạn chọn!')
             
-            
-
     def _create_booking_history(self, record):
         self.env['hotel.booking.history'].create({
-            'guest_name': record.customer_name,  # Sử dụng guest_name từ bản ghi hiện tại
+            'guest_name': record.customer_name,
             'hotel_id': record.hotel_id.id,
             'room_id': record.room_id.id,
             'check_in': record.check_in,
             'check_out': record.check_out,
         })
     
-
     #endregion
     
-    # Func xác nhận book phòng
-    # def action_confirm(self):
-    #     for record in self.sudo(): 
-    #         if record.state == 'draft':
-    #             record.state = 'confirmed'
-    #             if record.room_id:
-    #                 record.room_id.state = 'booked'
-    #     return True
-    
-    
-    
+    # this action is to confirm a booking
     def action_confirm(self):
         for record in self.sudo(): 
             if record.state == 'draft':
                 record.state = 'confirmed'
                 if record.room_id:
                     record.room_id.state = 'booked'
-                    # Trigger recompute last_booking_date
                     record.room_id._compute_last_booking_date()
         return True
     
-    
-    
-    
-    # Override phương thức unlink để xử lý khi xóa booking
     def unlink(self):
         for record in self:
-            # Nếu booking đã confirmed và có phòng được đặt
             if record.state == 'confirmed' and record.room_id:
-                # Set trạng thái phòng về available
                 record.room_id.state = 'available'
-        # Gọi phương thức unlink của lớp cha để xóa bản ghi
         return super(HotelBooking, self).unlink()
     
-    
-    # Add these methods to the HotelBooking class:
-
     def write(self, vals):
-        # Override write method to handle state changes
         result = super(HotelBooking, self).write(vals)
         if 'state' in vals and vals['state'] == 'confirmed':
             for record in self:
@@ -127,11 +103,25 @@ class HotelBooking(models.Model):
                     record.room_id.state = 'booked'
         return result
 
+
+    # this action is for server action (massc confirm booking orders)
     def action_mass_confirm(self):
-        # Method for mass confirmation
         for record in self:
             if record.state == 'draft':
                 record.action_confirm()
         return True
-    
-    
+
+    def action_open_payment_wizard(self):
+        """Open payment wizard"""
+        return {
+            'name': 'Thanh toán',
+            'type': 'ir.actions.act_window',
+            'res_model': 'hotel.booking.payment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_booking_id': self.id,
+                'default_hotel_id': self.hotel_id.id,
+                'default_room_id': self.room_id.id,
+            }
+        }

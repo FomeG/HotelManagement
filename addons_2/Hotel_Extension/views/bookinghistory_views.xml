@@ -5,7 +5,7 @@
         <field name="name">hotel.booking.history.tree</field>
         <field name="model">hotel.booking.history</field>
         <field name="arch" type="xml">
-            <list>
+            <list create="0">
                 <field name="guest_name" />
                 <field name="hotel_id" />
                 <field name="room_id" />

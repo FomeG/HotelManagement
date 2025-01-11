@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 {
-     'name': 'Hotel Management Extended',
+    'name': 'Hotel Management Extension',
     'version': '1.0',
     'category': 'Services',
     'summary': 'Extension for Hotel Management module',

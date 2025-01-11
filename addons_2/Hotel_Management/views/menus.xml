@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    
+    <!-- Menu Items -->
+    <!-- this is the root menu -->
+    <menuitem id="menu_hotel_root" name="Hotel Management" sequence="10" />
+
+    <!-- main HOTEL menu -->
+    <menuitem id="menu_hotel_management"
+        name="Hotel"
+        parent="menu_hotel_root"
+        action="action_hotel_management"
+        sequence="1" />
+
+    <!-- main ROOM menu -->
+    <menuitem id="menu_hotel_room"
+        name="Rooms"
+        parent="menu_hotel_root"
+        action="action_hotel_room"
+        sequence="20" />
+
+    <!-- main FEATURE menu -->
+    <menuitem id="menu_hotel_room_feature"
+        name="Room Features"
+        parent="menu_hotel_root"
+        action="action_hotel_room_feature"
+        sequence="40" />
+
+    <!-- BOOKING_ROOT -->
+    <menuitem id="menu_hotel_booking"
+        name="Bookings"
+        parent="menu_hotel_root"
+        sequence="30" />
+
+    <!-- main BOOKING menu -->
+    <menuitem id="menu_hotel_booking_main"
+        name="Bookings"
+        parent="menu_hotel_booking"
+        action="action_hotel_booking"
+        sequence="30" />
+
+    <!-- main BOOKING_PENDING menu -->
+    <menuitem id="menu_hotel_booking_pending"
+        name="Pending Bookings"
+        parent="menu_hotel_booking"
+        action="action_hotel_booking_pending"
+        sequence="35" />
+
 
 </odoo>

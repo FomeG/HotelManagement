@@ -86,14 +86,5 @@
         <field name="view_mode">list,form</field>
     </record>
 
-    <!-- Menu Items -->
-    <menuitem id="menu_hotel_root"
-        name="Hotel Management"
-        sequence="10" />
-
-    <menuitem id="menu_hotel_management"
-        name="Hotel"
-        parent="menu_hotel_root"
-        action="action_hotel_management"
-        sequence="1" />
+  
 </odoo>

@@ -28,25 +28,20 @@ Hotel management system with room management functionality
         'security/ir.model.access.csv',
         
         'views/report_action.xml',
-        
-        
         'views/hotel_views.xml',
         'views/room_views.xml',
         'views/feature_views.xml',
         'views/booking_views.xml',
         'views/booking_pending.xml',
+        'views/menus.xml',
         
+        'wizard/hotel_booking_payment_wizard_view.xml',
         
         'report/hotel_report_template.xml',
         
-        
         'data/email_config.xml',
         'data/email_template.xml',
-        
         'data/cronjob.xml',
-        
-        
-        
         'data/server_action.xml',
         
         

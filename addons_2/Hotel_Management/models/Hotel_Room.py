@@ -10,6 +10,7 @@ class HotelRoom(models.Model):
     # Basic setup info
     _name = 'hotel.room'  # Technical name
     _description = 'Hotel Room'  # Display title
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Define important fields
     hotel_id = fields.Many2one('hotel.management', 'Hotel', required=True)  # Link to hotel (req)
@@ -31,7 +32,6 @@ class HotelRoom(models.Model):
     feature_ids = fields.Many2many('hotel.room.feature', string='Features')  # Room features list (m2m)
     # last_booking_date = fields.Datetime('Last Booking Date')
     last_booking_date = fields.Date(string='Last Booking Date', compute='_compute_last_booking_date')
-
 
     # SQL Constraint: Room number must be unique within same hotel
     _sql_constraints = [
@@ -63,10 +63,17 @@ class HotelRoom(models.Model):
                 ('create_date', '>=', unrented_time)
             ])
             
+            # bookings = self.search([
+            # '|',
+            # ('last_booking_date', '<', seven_days_ago),
+            # ('last_booking_date', '=', False)
+            # ])
+            
             # collect rooms with no bookings in the past 7 days
             if bookings == 0:
                 unrented_rooms.append({
                     'name': room.name,
+                    'hotel_name': room.hotel_id.name,
                     'price': room.price,
                     'state': dict(room._fields['state'].selection).get(room.state)
                 })
@@ -87,6 +94,7 @@ class HotelRoom(models.Model):
                 <table border="1" style="border-collapse: collapse; width: 100%;">
                     <tr style="background-color: #f2f2f2;">
                         <th style="padding: 8px;">Room Number</th>
+                        <th style="padding: 8px;">Hotel</th>
                         <th style="padding: 8px;">Price (VND)</th>
                         <th style="padding: 8px;">Status</th>
                     </tr>
@@ -96,6 +104,7 @@ class HotelRoom(models.Model):
                 rooms_html += f'''
                     <tr>
                         <td style="padding: 8px;">{room['name']}</td>
+                        <td style="padding: 8px;">{room['hotel_name']}</td>
                         <td style="padding: 8px;">{room['price']}</td>
                         <td style="padding: 8px;">{room['state']}</td>
                     </tr>
@@ -122,7 +131,6 @@ class HotelRoom(models.Model):
             
     #endregion
         
-        
     @api.depends('hotel_id', 'name')
     def _compute_last_booking_date(self):
         for record in self:
@@ -139,7 +147,7 @@ class HotelRoom(models.Model):
                 
                 
 
-    # Add this method for the automated action
+    # Automated method (check unbooked room)
     def check_unbooked_rooms(self):
         # Get rooms that haven't been booked in 7 days
         seven_days_ago = datetime.now() - timedelta(minutes=1)
