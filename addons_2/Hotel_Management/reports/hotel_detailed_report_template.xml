@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="hotel_detailed_report_template">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page">
+                    <!-- CSS Styles -->
+                    <style>
+                        .report-header {
+                        background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+                        color: white;
+                        padding: 30px;
+                        border-radius: 10px;
+                        margin-bottom: 30px;
+                        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        }
+
+                        .report-header h2 {
+                        margin: 0;
+                        font-size: 28px;
+                        font-weight: 600;
+                        }
+
+                        .section-title {
+                        color: #1e3c72;
+                        font-size: 20px;
+                        font-weight: 600;
+                        margin: 25px 0 15px;
+                        padding-bottom: 10px;
+                        border-bottom: 2px solid #1e3c72;
+                        }
+
+                        .info-table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+                        }
+
+                        .info-table th {
+                        background-color: #f8f9fa;
+                        color: #1e3c72;
+                        font-weight: 600;
+                        padding: 15px;
+                        text-align: left;
+                        border: 1px solid #e9ecef;
+                        }
+
+                        .info-table td {
+                        padding: 12px 15px;
+                        border: 1px solid #e9ecef;
+                        }
+
+                        .stats-container {
+                        display: flex;
+                        justify-content: space-between;
+                        margin: 20px 0;
+                        }
+
+                        .stat-box {
+                        background: white;
+                        border-radius: 8px;
+                        padding: 20px;
+                        flex: 1;
+                        margin: 0 10px;
+                        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+                        border: 1px solid #e9ecef;
+                        }
+
+                        .stat-number {
+                        font-size: 24px;
+                        font-weight: bold;
+                        color: #1e3c72;
+                        }
+
+                        .stat-label {
+                        color: #6c757d;
+                        font-size: 14px;
+                        margin-top: 5px;
+                        }
+
+                        .room-table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        border-radius: 8px;
+                        overflow: hidden;
+                        box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+                        }
+
+                        .room-table thead th {
+                        background-color: #1e3c72;
+                        color: white;
+                        padding: 15px;
+                        font-weight: 500;
+                        }
+
+                        .room-table tbody td {
+                        padding: 12px 15px;
+                        border-bottom: 1px solid #e9ecef;
+                        }
+
+                        .room-table tbody tr:hover {
+                        background-color: #f8f9fa;
+                        }
+
+                        .badge {
+                        padding: 5px 10px;
+                        border-radius: 15px;
+                        font-size: 12px;
+                        font-weight: 500;
+                        }
+
+                        .badge-available {
+                        background-color: #28a745;
+                        color: white;
+                        }
+
+                        .badge-booked {
+                        background-color: #ffc107;
+                        color: #000;
+                        }
+
+                        .feature-badge {
+                        background-color: #e9ecef;
+                        color: #1e3c72;
+                        padding: 4px 8px;
+                        border-radius: 12px;
+                        margin-right: 4px;
+                        font-size: 11px;
+                        }
+
+                        .report-footer {
+                        margin-top: 40px;
+                        text-align: center;
+                        color: #6c757d;
+                        font-size: 12px;
+                        border-top: 1px solid #e9ecef;
+                        padding-top: 20px;
+                        }
+                    </style>
+
+                    <!-- Report Header -->
+                    <div class="report-header">
+                        <h2 class="text-danger">Hotel Detailed Report</h2>
+                    </div>
+
+                    <!-- Hotel Information Section -->
+                    <h3 class="section-title">Hotel Information</h3>
+                    <table class="info-table">
+                        <tr>
+                            <th style="width: 30%">Hotel Name</th>
+                            <td>
+                                <t t-esc="doc.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Address</th>
+                            <td>
+                                <t t-esc="doc.address" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Manager</th>
+                            <td>
+                                <t t-esc="doc.manager_id.name" />
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Room Statistics -->
+                    <h3 class="section-title">Room Statistics</h3>
+                    <div class="stats-container">
+                        <div class="stat-box">
+                            <div class="stat-number">
+                                <t t-esc="doc.room_count" />
+                            </div>
+                            <div class="stat-label">Total Rooms</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">a
+                                <t
+                                    t-esc="len(doc.room_ids.filtered(lambda r: r.state == 'available'))" />
+                            </div>
+                            <div class="stat-label">Available Rooms</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">
+                                <t t-esc="len(doc.room_ids.filtered(lambda r: r.state == 'booked'))" />
+                            </div>
+                            <div class="stat-label">Booked Rooms</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number">
+                                <t t-esc="doc.floor_count" />
+                            </div>
+                            <div class="stat-label">Total Floors</div>
+                        </div>
+                    </div>
+
+                    <!-- Detailed Room List -->
+                    <h3 class="section-title">Room Details</h3>
+                    <table class="room-table">
+                        <thead>
+                            <tr>
+                                <th>Room Number</th>
+                                <th>Bed Type</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th>Features</th>
+                                <th>Last Booking</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="doc.room_ids" t-as="room">
+                                <tr>
+                                    <td>
+                                        <strong>
+                                            <t t-esc="room.name" />
+                                        </strong>
+                                    </td>
+                                    <td>
+                                        <t
+                                            t-esc="dict(room._fields['bed_type'].selection).get(room.bed_type)" />
+                                    </td>
+                                    <td>
+                                        <strong><t t-esc="'{:,.0f}'.format(room.price)" /> VND</strong>
+                                    </td>
+                                    <td>
+                                        <span
+                                            t-attf-class="badge badge-#{room.state == 'available' and 'available' or 'booked'}">
+                                            <t
+                                                t-esc="dict(room._fields['state'].selection).get(room.state)" />
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <t t-foreach="room.feature_ids" t-as="feature">
+                                            <span class="feature-badge">
+                                                <t t-esc="feature.name" />
+                                            </span>
+                                        </t>
+                                    </td>
+                                    <td>
+                                        <t t-esc="room.last_booking_date or 'N/A'" />
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Report Footer -->
+                    <div class="report-footer">
+                        <p>Report generated on: <t
+                                t-esc="context_timestamp(datetime.datetime.now()).strftime('%Y-%m-%d %H:%M:%S')" /></p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

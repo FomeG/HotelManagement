@@ -82,12 +82,28 @@ class HotelBooking(models.Model):
     # this action is to confirm a booking
     def action_confirm(self):
         for record in self.sudo(): 
-            if record.state == 'draft':
+            if record.state == 'draft' and record.payment_status == 'paid':
                 record.state = 'confirmed'
                 if record.room_id:
                     record.room_id.state = 'booked'
                     record.room_id._compute_last_booking_date()
+            else:
+                return {
+                    'type': 'ir.actions.client',
+                    'tag' : 'display_notification',
+                    'params': {
+                        'title' : 'Lưu ý',
+                        'message' : 'Chưa thanh toán!',
+                        'sticky' : False,
+                        'type': 'warning', # success: màu xanh lá
+                                           # warning: màu vàng/cam
+                                           # danger: màu đỏ
+                                           # info: màu xanh dương (mặc định)
+                    }
+                }
         return True
+    
+    
     
     def unlink(self):
         for record in self:
@@ -107,11 +123,14 @@ class HotelBooking(models.Model):
     # this action is for server action (massc confirm booking orders)
     def action_mass_confirm(self):
         for record in self:
-            if record.state == 'draft':
+            if record.state == 'draft' and record.payment_status == 'paid':
                 record.action_confirm()
         return True
 
-    def action_open_payment_wizard(self):
+
+
+
+    def action_open_payment_wizard(self): # This one is to open the payment popup (target: 'new' is to open a new window (popup))
         """Open payment wizard"""
         return {
             'name': 'Thanh toán',

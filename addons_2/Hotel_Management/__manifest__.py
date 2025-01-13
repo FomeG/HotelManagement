@@ -37,7 +37,8 @@ Hotel management system with room management functionality
         
         'wizard/hotel_booking_payment_wizard_view.xml',
         
-        'report/hotel_report_template.xml',
+        'reports/hotel_report_template.xml',
+        'reports/hotel_detailed_report_template.xml',
         
         'data/email_config.xml',
         'data/email_template.xml',

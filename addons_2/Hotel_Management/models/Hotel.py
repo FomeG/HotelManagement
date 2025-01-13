@@ -98,12 +98,24 @@ class HotelManagement(models.Model):
     
 
         
+    # def test_btn(self):
+    #     return {
+    #         'effect': {
+    #             'fadeout': 'slow',
+    #             'message': 'hello world',
+    #             'type': 'rainbow_man',
+    #         }
+    #     }
+        
+    def test_btn(self):
+        return {
+            'type': 'ir.actions.client',
+            'tag' : 'display_notification',
+            'params': {
+                'title' : 'OK 123',
+                'message' : 'AKSFKASNFKNKANSFKASFKASNFKASNF',
+                'sticky' : False,
+            }
+        }
         
         
-        
-            
-    
-    
-    
-    
-   

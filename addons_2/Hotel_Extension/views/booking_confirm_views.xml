@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <button name="action_confirm" position="attributes">
                 <!-- Modify button attributes as needed -->
-                <attribute name="string">Confirm _ Test</attribute>
+                <attribute name="string">Confirm</attribute>
                 <attribute name="class">btn-danger</attribute>
             </button>
         </field>

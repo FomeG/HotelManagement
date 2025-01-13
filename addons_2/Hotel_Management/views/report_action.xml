@@ -8,4 +8,15 @@
         <field name="binding_type">action</field>
         <field name="binding_model_id" ref="model_hotel_management" />
     </record>
+
+    <!-- Detailed Report Action -->
+    <record id="action_hotel_detailed_report" model="ir.actions.report">
+        <field name="name">Hotel Detailed Report</field>
+        <field name="model">hotel.management</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">Hotel_Management.hotel_detailed_report_template</field>
+        <field name="report_file">Hotel_Management.hotel_detailed_report_template</field>
+        <field name="binding_model_id" ref="model_hotel_management" />
+        <field name="binding_type">report</field>
+    </record>
 </odoo>
