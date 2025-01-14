@@ -30,7 +30,7 @@
                     <button name="test_btn"
                         string="TEST"
                         type="object"
-                        class="btn-danger"/>
+                        class="btn-danger" />
                 </header>
                 <sheet>
                     <group>

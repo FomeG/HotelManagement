@@ -112,8 +112,8 @@ class HotelManagement(models.Model):
             'type': 'ir.actions.client',
             'tag' : 'display_notification',
             'params': {
-                'title' : 'OK 123',
-                'message' : 'AKSFKASNFKNKANSFKASFKASNFKASNF',
+                'title' : 'Test',
+                'message' : 'Test notification',
                 'sticky' : False,
             }
         }

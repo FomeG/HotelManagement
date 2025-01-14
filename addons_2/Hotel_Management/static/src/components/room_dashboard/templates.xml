@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Assets Bundle -->
+    <template id="assets_backend" inherit_id="web.assets_backend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css" href="/Hotel_Management/static/src/css/room_dashboard.css"/>
+            <script type="text/javascript" src="/Hotel_Management/static/src/js/room_dashboard.js"/>
+        </xpath>
+    </template>
+
+    <!-- Dashboard Template - Đảm bảo ID template khớp với RoomDashboard.template -->
+    <template id="RoomDashboard" name="Room Dashboard">
+        <Layout>
+            <div class="room-dashboard">
+                <div class="room-dashboard-header">
+                    <h2>Room Dashboard</h2>
+                </div>
+                
+                <div class="room-stats">
+                    <div class="stat-card">
+                        <h4>Total Rooms</h4>
+                        <p t-esc="state.data.stats.total"/>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Available Rooms</h4>
+                        <p t-esc="state.data.stats.available" class="status-available"/>
+                    </div>
+                    <div class="stat-card">
+                        <h4>Booked Rooms</h4>
+                        <p t-esc="state.data.stats.booked" class="status-booked"/>
+                    </div>
+                </div>
+
+                <div class="room-list">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Room Number</th>
+                                <th>Hotel</th>
+                                <th>Type</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="state.data.rooms" t-as="room">
+                                <tr>
+                                    <td t-esc="room.name"/>
+                                    <td t-esc="room.hotel_id[1]"/>
+                                    <td t-esc="room.bed_type"/>
+                                    <td t-esc="room.price"/>
+                                    <td>
+                                        <span t-attf-class="badge badge-#{room.state === 'available' ? 'success' : 'warning'}"
+                                              t-esc="room.state"/>
+                                    </td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </Layout>
+    </template>
+</odoo>

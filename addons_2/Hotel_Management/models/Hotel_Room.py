@@ -135,22 +135,23 @@ class HotelRoom(models.Model):
     def _compute_last_booking_date(self):
         for record in self:
             if record.hotel_id and record.name:
-                # Tìm booking gần nhất của phòng này trong bảng hotel.booking
                 last_booking = self.env['hotel.booking'].search([
                     ('room_id', '=', record.id),
-                    ('state', '=', 'confirmed')  # Chỉ lấy các booking đã confirmed
-                ], order='check_in desc', limit=1)  # Sắp xếp theo check_in date thay vì booking_date
+                    ('state', '=', 'confirmed')  # Take confirmed bookings one
+                ], order='check_in desc', limit=1)  # order by to take the latest check in date
                 
                 record.last_booking_date = last_booking.check_in if last_booking else False
             else:
                 record.last_booking_date = False
                 
                 
+                
+                
 
     # Automated method (check unbooked room)
     def check_unbooked_rooms(self):
         # Get rooms that haven't been booked in 7 days
-        seven_days_ago = datetime.now() - timedelta(minutes=1)
+        seven_days_ago = datetime.now() - timedelta(minutes=1) # 1 minute to test
         unbooked_rooms = self.search([
             '|',
             ('last_booking_date', '<', seven_days_ago),

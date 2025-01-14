@@ -1,75 +1,57 @@
-# -*- coding: utf-8 -*-
+# Add these imports at the top
 from odoo import http
-import requests
-from odoo.http import Controller, route, request
+from odoo.http import request
+import json
 
-# class Ss34(http.Controller):
-#     @http.route('/ss34/ss34', auth='public')
-#     def index(self, **kw):
-#         return "Hello, world"
-
-#     @route('/api/get_data', type='json', auth='public', methods=['POST'])
-#     def get_data(self, **kwargs):
-#         # Xử lý yêu cầu từ client
-#         records = request.env['your.model'].search([])
-#         return {'data': records.read(['field1', 'field2'])}
-
-
-#     @http.route('/ss34/ss34/objects', auth='public')
-#     def list(self, **kw):
-#         return http.request.render('Hotel_Management.listing', {
-#             'root': '/ss34/ss34',
-#             'objects': http.request.env['Hotel_Management.ss34'].search([]),
-#         })
-
-#     @http.route('/ss34/ss34/objects/<model("Hotel_Management.ss34"):obj>', auth='public')
-#     def object(self, obj, **kw):
-#         return http.request.render('Hotel_Management.object', {
-#             'object': obj
-#         })
-
-
-class APIController(http.Controller):
-
-    @http.route('/api/get_transactions', type='http', auth='public', methods=['GET'])
-    def get_transactions(self, **kw):
-        # Bước 1: Gửi yêu cầu GET tới API
-        api_url = "https://script.google.com/macros/s/AKfycbxDT6RNiRIexcNzU91la5dLirQMRke9Lg6Qcenj7iAUSirn6QBEH46fM99ThDxLDwyBBw/exec"
+# Add this new controller class
+class RoomDashboardController(http.Controller):
+    @http.route('/api/room_dashboard/data', type='json', auth='user')
+    def get_dashboard_data(self):
         try:
-            response = requests.get(api_url)
-            response.raise_for_status()  # Kiểm tra nếu có lỗi HTTP
-            data = response.json()  # Chuyển đổi từ JSON thành dict
-        except requests.exceptions.RequestException as e:
-            return request.make_response(
-                f"Error fetching data from API: {str(e)}",
-                500,
-                headers={"Content-Type": "text/plain"}
+            # Get rooms data
+            rooms = request.env['hotel.room'].search_read(
+                [],  # domain
+                ['name', 'state', 'hotel_id', 'bed_type', 'price', 'last_booking_date']
             )
 
-        # Bước 2: Kiểm tra xem API trả về lỗi hay không
-        if data.get('error'):
-            return request.make_response(
-                "API returned an error.",
-                500,
-                headers={"Content-Type": "text/plain"}
-            )
+            # Get statistics
+            total_rooms = len(rooms)
+            available_rooms = len([r for r in rooms if r['state'] == 'available'])
+            booked_rooms = len([r for r in rooms if r['state'] == 'booked'])
 
-        # Bước 3: Xử lý dữ liệu (tùy chỉnh theo nhu cầu)
-        transactions = data.get('data', [])
-        processed_data = [
-            {
-                "transaction_id": txn["Mã GD"],
-                "description": txn["Mô tả"],
-                "amount": txn["Giá trị"],
-                "transaction_date": txn["Ngày diễn ra"],
-                "account_number": txn["Số tài khoản"]
+            return {
+                'status': 'success',
+                'data': {
+                    'rooms': rooms,
+                    'stats': {
+                        'total': total_rooms,
+                        'available': available_rooms,
+                        'booked': booked_rooms
+                    }
+                }
             }
-            for txn in transactions
-        ]
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }
 
-        # Bước 4: Trả dữ liệu JSON về client
-        return request.make_response(
-            request.json_response({"error": False, "transactions": processed_data}),
-            200,
-            headers={"Content-Type": "application/json"}
-        )
+    @http.route('/api/room_dashboard/update_status', type='json', auth='user')
+    def update_room_status(self, room_id, new_status):
+        try:
+            room = request.env['hotel.room'].browse(int(room_id))
+            if room.exists():
+                room.write({'state': new_status})
+                return {
+                    'status': 'success',
+                    'message': f'Room {room.name} status updated to {new_status}'
+                }
+            return {
+                'status': 'error',
+                'message': 'Room not found'
+            }
+        except Exception as e:
+            return {
+                'status': 'error',
+                'message': str(e)
+            }

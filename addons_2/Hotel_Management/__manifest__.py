@@ -10,6 +10,7 @@ Hotel management system with room management functionality
 
     'author': "AHT TECH",
     'website': "https://phomeanhoa.online",
+    'license': 'LGPL-3',
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/15.0/odoo/addons/base/data/ir_module_category_data.xml
@@ -33,6 +34,8 @@ Hotel management system with room management functionality
         'views/feature_views.xml',
         'views/booking_views.xml',
         'views/booking_pending.xml',
+        'views/templates.xml',
+        
         'views/menus.xml',
         
         'wizard/hotel_booking_payment_wizard_view.xml',
@@ -48,7 +51,17 @@ Hotel management system with room management functionality
         
     ],
     
-  
+    'assets': {
+        'web.assets_backend': [
+            'Hotel_Management/static/src/main.js',
+            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.js',
+            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.scss',
+        ],
+        'web.assets_qweb': [
+            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.xml',
+        ],
+    },
+    
     
     # only loaded in demonstration mode
     'demo': [],

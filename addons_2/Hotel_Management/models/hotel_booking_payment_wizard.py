@@ -15,6 +15,7 @@ class HotelBookingPaymentWizard(models.TransientModel):
         for record in self:
             if record.payment_amount <= 0:
                 raise ValidationError('Số tiền thanh toán phải lớn hơn 0')
+            
 
     def action_confirm_payment(self):
         self.ensure_one()

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+    <t t-name="hotel_management.RoomDashboard">
+        <div class="room-dashboard p-4">
+            <div class="stats-container d-flex justify-content-around mb-4">
+                <div class="stat-box text-center p-3 bg-white shadow rounded">
+                    <h3 class="text-primary" t-esc="state.stats.total"/>
+                    <p>Total Rooms</p>
+                </div>
+                <div class="stat-box text-center p-3 bg-white shadow rounded">
+                    <h3 class="text-success" t-esc="state.stats.available"/>
+                    <p>Available Rooms</p>
+                </div>
+                <div class="stat-box text-center p-3 bg-white shadow rounded">
+                    <h3 class="text-warning" t-esc="state.stats.booked"/>
+                    <p>Booked Rooms</p>
+                </div>
+            </div>
+
+            <div class="rooms-grid">
+                <div class="row">
+                    <t t-foreach="state.rooms" t-as="room" t-key="room.id">
+                        <div class="col-md-3 mb-3">
+                            <div class="room-card p-3 bg-white shadow rounded">
+                                <h5 class="room-number" t-esc="room.name"/>
+                                <p class="hotel-name text-muted" t-esc="room.hotel_id[1]"/>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span t-esc="room.bed_type"/>
+                                    <span class="price" t-esc="room.price + ' VND'"/>
+                                </div>
+                                <div t-attf-class="status-badge mt-2 p-1 text-center rounded {{room.state === 'available' ? 'bg-success' : 'bg-warning'}}">
+                                    <span class="text-white" t-esc="room.state"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>
