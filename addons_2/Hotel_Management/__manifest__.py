@@ -19,7 +19,7 @@ Hotel management system with room management functionality
     'version': '0.1',
 
     # any module necessary for this one to work correctly
-    'depends': ['mail','hr', 'web'],
+    'depends': ['mail','hr','base'],
 
     # always loaded
     'data': [
@@ -34,9 +34,14 @@ Hotel management system with room management functionality
         'views/feature_views.xml',
         'views/booking_views.xml',
         'views/booking_pending.xml',
-        'views/templates.xml',
-        
+        # 'views/templates.xml',
+        # 'views/room_dashboard_view.xml',
         'views/menus.xml',
+        
+        
+               
+        
+        
         
         'wizard/hotel_booking_payment_wizard_view.xml',
         
@@ -53,19 +58,22 @@ Hotel management system with room management functionality
     
     'assets': {
         'web.assets_backend': [
-            'Hotel_Management/static/src/main.js',
-            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.js',
-            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.scss',
-        ],
-        'web.assets_qweb': [
-            'Hotel_Management/static/src/components/room_dashboard/room_dashboard.xml',
+            'Hotel_Management/static/src/components/**/*.xml',
+            'Hotel_Management/static/src/components/**/*.scss',
+            'Hotel_Management/static/src/components/**/*.js',
         ],
     },
-    
     
     # only loaded in demonstration mode
     'demo': [],
     
     'installable': True,
     'application': True,
+    
+    
+    
+    
+    
+    'license': 'LGPL-3',
 }
+

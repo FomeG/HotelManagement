@@ -1,0 +1,23 @@
+.hotel-booking-report {
+    font-family: Arial, sans-serif;
+    color: #333333;
+    
+    table {
+        width: 100%;
+        margin-bottom: 1rem;
+        
+        td, th {
+            vertical-align: middle;
+        }
+    }
+    
+    .text-end {
+        text-align: right;
+    }
+    
+    .table-borderless {
+        td, th {
+            border: none;
+        }
+    }
+}

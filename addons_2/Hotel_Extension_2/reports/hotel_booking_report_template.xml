@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_hotel_booking">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <!-- Header Name -->
+                        <h1 class="text-center text-primary mb-4" t-field="doc.hotel_id.name" />
+
+                        <!-- Contact Information -->
+                        <div class="row mb-4 small text-muted">
+                            <div class="col-12 text-center">
+                                <span t-field="doc.hotel_id.address" /> · </div>
+                        </div>
+
+                        <!-- BOOKING Header -->
+                        <h2 class="text-primary border-bottom pb-2"
+                            style="font-weight: bold; font-family: 'Poppins', sans-serif">BOOKING</h2>
+
+                        <!-- Main Booking Details -->
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">
+                                            Check-in</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.check_in" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">
+                                            Check-out</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.check_out" />
+                                        </td>
+                                    </tr>
+                                    <!-- <tr>
+                                        <td class="px-0 py-1">Guests</td>
+                                        <td class="px-0 py-1"><span t-field="doc.adults"/> adults, <span t-field="doc.children"/>
+                                    children</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-0 py-1">Unit</td>
+                                        <td class="px-0 py-1"><span t-field="doc.room_id.name"/></td>
+                                    </tr> -->
+                                </table>
+                            </div>
+                            <div class="col-6">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">Booked
+                                            By</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.customer_name" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">
+                                            Email</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.customer_name.email" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">Booking
+                                            #</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.name" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-0 py-1 text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">
+                                            Status</td>
+                                        <td class="px-0 py-1">
+                                            <span t-field="doc.state" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+
+                        <!-- Services Table -->
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th>Quantity</th>
+                                    <th class="text-end">Unit Price</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Room Charge -->
+                                <tr>
+                                    <td>
+                                        <span t-field="doc.room_id.name" />
+                                    </td>
+                                    <td>
+                                        <span t-field="doc.nights" />
+                                    </td>
+                                    <td class="text-end">
+                                        <span t-field="doc.room_id.price"
+                                            t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                    </td>
+                                    <td class="text-end">
+                                        <t t-set="room_total"
+                                            t-value="doc.room_id.price * doc.nights" />
+                                        <span t-esc="room_total"
+                                            t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                    </td>
+                                </tr>
+                                <!-- Additional Services -->
+                                <t t-set="service_total"
+                                    t-value="sum(doc.service_line_ids.mapped('price_total'))" />
+                                <t t-foreach="doc.service_line_ids" t-as="line">
+                                    <tr>
+                                        <td>
+                                            <span t-field="line.service_id.name" />
+                                        </td>
+                                        <td>
+                                            <span t-field="line.quantity" />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.price_unit"
+                                                t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                        </td>
+                                        <td class="text-end">
+                                            <span t-field="line.price_total"
+                                                t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                        </td>
+                                    </tr>
+                                </t>
+                                <!-- Subtotal, VAT, and Total calculations -->
+                                <t t-set="subtotal" t-value="room_total + service_total" />
+                                <t t-set="vat" t-value="subtotal * 0.1" />
+                                <t t-set="total" t-value="subtotal + vat" />
+
+                                <tr>
+                                    <td colspan="3" class="text-end">Subtotal</td>
+                                    <td class="text-end">
+                                        <span t-esc="subtotal"
+                                            t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="3" class="text-end">VAT</td>
+                                    <td class="text-end">
+                                        <span t-esc="vat"
+                                            t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                    </td>
+                                </tr>
+                                <tr class="border-top">
+                                    <td colspan="3" class="text-end">
+                                        <strong class="text-primary"
+                                            style="font-weight: bold; font-family: 'Poppins', sans-serif">
+                                            Total</strong>
+                                    </td>
+                                    <td class="text-end">
+                                        <strong>
+                                            <span t-esc="total"
+                                                t-options='{"widget": "monetary", "display_currency": doc.sale_order_id.currency_id}' />
+                                        </strong>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <!-- Additional Information -->
+                        <div class="mt-4">
+                            <strong style="font-weight: bold; font-family: 'Poppins', sans-serif">Additional
+                                Information</strong>
+                            <ul class="list-unstyled small">
+                                <li>lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                                <li>lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

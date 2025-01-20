@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Available Rooms List -->
+    <template id="hotel_rooms" name="Available Hotel Rooms">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Available Rooms</h1>
+                <div class="row">
+                    <t t-foreach="rooms" t-as="room">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">Room <t t-esc="room.name" /></h5>
+                                    <p class="card-text"> Type: <t t-esc="room.bed_type" /><br />
+                                        Price: <t t-esc="room.price" /><br /> Status: <t
+                                            t-esc="room.state" />
+                                    </p>
+                                    <a t-att-href="'/hotel/book?room_id=%s' % room.id"
+                                        class="btn btn-primary">Book Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Sửa template hotel_book_form -->
+    <template id="hotel_book_form" name="Book a Room">
+        <t t-call="website.layout">
+            <div class="container">
+                <h1>Book a Room</h1>
+                <form action="/hotel/book" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()" />
+
+                    <div class="form-group">
+                        <label for="room_id">Room</label>
+                        <select name="room_id" class="form-control" required="required">
+                            <t t-foreach="rooms" t-as="room">
+                                <option t-att-value="room.id" t-att-data-type="room.bed_type"> Room <t
+                                        t-esc="room.name" /> (<t t-esc="room.bed_type" />) </option>
+                            </t>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="check_in">Check In</label>
+                        <input type="date" name="check_in" class="form-control" required="required" />
+                    </div>
+                    <div class="form-group">
+                        <label for="check_out">Check Out</label>
+                        <input type="date" name="check_out" class="form-control" required="required" />
+                    </div>
+                    <button type="submit" class="btn btn-primary">Book Now</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- My Bookings List -->
+    <template id="portal_my_hotel_bookings" name="My Hotel Bookings">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Hotel Bookings</t>
+            </t>
+            <t t-if="not bookings">
+                <p>There are currently no bookings for your account.</p>
+            </t>
+            <t t-if="bookings">
+                <table class="table table-hover o_portal_my_doc_table">
+                    <thead>
+                        <tr class="active">
+                            <th>Booking Reference</th>
+                            <th>Room</th>
+                            <th>Check In</th>
+                            <th>Check Out</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="bookings" t-as="booking">
+                            <td>
+                                <a t-attf-href="/my/hotel/booking/#{booking.id}">
+                                    <t t-esc="booking.name" />
+                                </a>
+                            </td>
+                            <td>
+                                <t t-esc="booking.room_id.name" />
+                            </td>
+                            <td>
+                                <t t-esc="booking.check_in" />
+                            </td>
+                            <td>
+                                <t t-esc="booking.check_out" />
+                            </td>
+                            <td>
+                                <t t-esc="booking.state" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </t>
+        </t>
+    </template>
+
+    <!-- Single Booking View -->
+    <template id="portal_my_hotel_booking" name="My Hotel Booking">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <div class="row mt16">
+                    <div class="col-12">
+                        <h4>
+                            <span t-field="booking.name" />
+                            <small class="text-muted">(<span t-field="booking.state" />)</small>
+                        </h4>
+                    </div>
+                </div>
+
+
+                <div class="mt32">
+                    <h4>Booking Details</h4>
+                    <table class="table table-sm">
+                        <tr>
+                            <th>Room:</th>
+                            <td>
+                                <span t-field="booking.room_id.name" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Check In:</th>
+                            <td>
+                                <span t-field="booking.check_in" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Check Out:</th>
+                            <td>
+                                <span t-field="booking.check_out" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>Nights:</th>
+                            <td>
+                                <span t-field="booking.nights" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+
+
+                <div class="mt-4">
+                    <a t-if="booking.state == 'checkin'"
+                        t-attf-href="/my/hotel/services/#{booking.id}"
+                        class="btn btn-primary">
+                        Order Services
+                    </a>
+                </div>
+
+                <!-- Services Section -->
+                <div class="mt32">
+                    <h4>Additional Services</h4>
+                    <t t-if="booking.service_line_ids">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="booking.service_line_ids" t-as="service">
+                                    <td>
+                                        <span t-field="service.service_id.name" />
+                                    </td>
+                                    <td>
+                                        <span t-field="service.quantity" />
+                                    </td>
+                                    <td>
+                                        <span t-field="service.price_unit" />
+                                    </td>
+                                    <td>
+                                        <span t-field="service.price_total" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <p>No additional services ordered.</p>
+                    </t>
+                </div>
+
+
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Service Order Template -->
+    <template id="portal_my_services" name="My Hotel Services">
+        <t t-call="portal.portal_layout">
+            <div class="container">
+                <h2>Available Services</h2>
+
+                <!-- Available Services -->
+                <div class="row mt-4">
+                    <t t-foreach="services" t-as="service">
+                        <div class="col-md-4 mb-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <t t-esc="service.name" />
+                                    </h5>
+                                    <p class="card-text">
+                                        <t
+                                            t-if="service.service_type != 'self' or service.price > 0">
+                                            Price: <span t-field="service.price" />
+                                        </t>
+                                        <br />
+                                        <t t-if="service.service_type in ['food', 'drink']">
+                                            Available: <span t-field="service.qty_available" />
+                                        </t>
+                                    </p>
+
+                                    <!-- Order Form for Paid Services -->
+                                    <form t-if="service.service_type != 'self' or service.price > 0"
+                                        action="/my/hotel/service/order" method="POST">
+                                        <input type="hidden" name="csrf_token"
+                                            t-att-value="request.csrf_token()" />
+                                        <input type="hidden" name="booking_id"
+                                            t-att-value="booking.id" />
+                                        <input type="hidden" name="service_id"
+                                            t-att-value="service.id" />
+
+                                        <div class="form-group"
+                                            t-if="service.service_type in ['food', 'drink']">
+                                            <label for="quantity">Quantity</label>
+                                            <input type="number" name="quantity"
+                                                class="form-control"
+                                                min="1" t-att-max="service.qty_available" value="1"
+                                                required="1" />
+                                        </div>
+
+                                        <t t-if="service.service_type in ['food', 'drink']">
+                                            <button type="submit" class="btn btn-primary mt-2"
+                                                t-att-disabled="service.qty_available == 0">
+                                                Order Now
+                                            </button>
+                                        </t>
+                                        <t t-else="">
+                                            <button type="submit" class="btn btn-primary mt-2">
+                                                Order Now
+                                            </button>
+                                        </t>
+                                    </form>
+
+                                    <!-- Request Form for Free Services -->
+                                    <form
+                                        t-if="service.service_type == 'self' and service.price == 0"
+                                        action="/my/hotel/service/order" method="POST">
+                                        <input type="hidden" name="csrf_token"
+                                            t-att-value="request.csrf_token()" />
+                                        <input type="hidden" name="booking_id"
+                                            t-att-value="booking.id" />
+                                        <input type="hidden" name="service_id"
+                                            t-att-value="service.id" />
+                                        <input type="hidden" name="quantity" value="1" />
+                                        <button type="submit" class="btn btn-secondary">
+                                            Request Service
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+
+                <!-- Current Services -->
+                <div class="mt-5">
+                    <h3>Your Current Services</h3>
+                    <t t-if="booking.service_line_ids">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Quantity</th>
+                                    <th>Price</th>
+                                    <th>Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr t-foreach="booking.service_line_ids" t-as="line">
+                                    <td>
+                                        <span t-field="line.service_id.name" />
+                                    </td>
+                                    <td>
+                                        <span t-field="line.quantity" />
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_unit" />
+                                    </td>
+                                    <td>
+                                        <span t-field="line.price_total" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </t>
+                    <t t-else="">
+                        <p>You haven't ordered any services yet.</p>
+                    </t>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
+    <!-- Add menu items -->
+    <template id="portal_my_home_menu_hotel" name="Portal My Home : hotel menu entries"
+        inherit_id="portal.portal_breadcrumbs" priority="20">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <li t-if="page_name == 'order'" class="breadcrumb-item">Orders</li>
+            <li t-if="page_name == 'services'" class="breadcrumb-item">Services</li>
+        </xpath>
+    </template>
+
+    <!-- My Orders -->
+    <template id="portal_my_orders" name="My Orders">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True" />
+
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">Orders</t>
+            </t>
+
+            <t t-if="not orders">
+                <div class="alert alert-warning mt8" role="alert">
+                    There are no orders.
+                </div>
+            </t>
+
+            <t t-if="orders" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>Order #</th>
+                        <th>Date</th>
+                        <th>Total</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <t t-foreach="orders" t-as="order">
+                        <tr>
+                            <td>
+                                <a t-att-href="'/my/orders/%s' % order.id">
+                                    <t t-esc="order.name" />
+                                </a>
+                            </td>
+                            <td>
+                                <span t-field="order.date_order" />
+                            </td>
+                            <td>
+                                <span t-field="order.amount_total" />
+                            </td>
+                            <td>
+                                <span t-field="order.state" />
+                            </td>
+                        </tr>
+                    </t>
+                </tbody>
+            </t>
+        </t>
+    </template>
+
+
+    <!-- Add menu items to portal home page -->
+    <template id="portal_my_home_hotel" name="Portal My Home : hotel entries"
+        inherit_id="portal.portal_my_home" priority="40">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="order_count" t-call="portal.portal_docs_entry">
+                <t t-set="title">Orders</t>
+                <t t-set="url" t-value="'/my/orders'" />
+                <t t-set="count" t-value="order_count" />
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="title">Services</t>
+                <t t-set="url" t-value="'/my/services'" />
+            </t>
+        </xpath>
+    </template>
+</odoo>

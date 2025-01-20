@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_room_portal,hotel.room.portal,Hotel_Management.model_hotel_room,base.group_portal,1,1,1,1
+access_hotel_booking_portal,hotel.booking.portal,Hotel_Management.model_hotel_booking,base.group_portal,1,1,1,1
+access_hotel_service_portal,hotel.service.portal,Hotel_Extension_2.model_hotel_service,base.group_portal,1,1,1,1
+access_hotel_booking_service_line_portal,hotel.booking.service.line.portal,Hotel_Extension_2.model_hotel_booking_service_line,base.group_portal,1,1,1,1

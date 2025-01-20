@@ -1,46 +1,75 @@
 /** @odoo-module **/
 
-import { registry } from '@web/core/registry';
-import { Layout } from '@web/search/layout';
-import { getDefaultConfig } from "@web/views/view";
-import { Component, onWillStart, onMounted } from "@odoo/owl";
+import { registry } from "@web/core/registry";
+import { Component, useState } from "@odoo/owl";
+import { useService } from "@web/core/utils/hooks";
 
-class RoomDashboard extends Component {
+export class RoomDashboard extends Component {
+    static template = "Hotel_Management.RoomDashboard";
+    static props = {
+        hotelId: { type: Number },
+    };
+    
     setup() {
-        super.setup();
-        onWillStart(async () => {
-            await this.fetchDashboardData();
+        this.orm = useService("orm");
+        this.actionService = useService("action");
+        this.notification = useService("notification");
+        
+        this.state = useState({
+            rooms: [],
+            loading: true,
+            filter: 'all' 
         });
-
-        onMounted(() => {
-            this.renderCharts();
-        });
+        
+        this.loadRooms();
     }
 
-    async fetchDashboardData() {
+    async loadRooms() {
+        this.state.loading = true;
         try {
-            const result = await this.env.services.rpc({
-                route: '/api/room_dashboard/data',
-                params: {},
-            });
-            if (result.status === 'success') {
-                this.state.data = result.data;
-            }
+            this.state.rooms = await this.orm.searchRead(
+                'hotel.room',
+                [['hotel_id', '=', this.props.hotelId]], 
+                ['name', 'state', 'bed_type', 'price', 'last_booking_date']
+            );
         } catch (error) {
-            console.error('Error fetching dashboard data:', error);
+            this.notification.add(this.env._t("Failed to load rooms"), {
+                type: 'danger',
+            });
+            console.error('Failed to load rooms:', error);
         }
+        this.state.loading = false;
     }
 
-    renderCharts() {
-        // Add chart rendering logic here if needed
+    get filteredRooms() {
+        if (this.state.filter === 'all') return this.state.rooms;
+        return this.state.rooms.filter(room => room.state === this.state.filter);
+    }
+
+    setFilter(filter) {
+        this.state.filter = filter;
+    }
+
+    getRoomClass(room) {
+        return {
+            'room-card': true,
+            'room-available': room.state === 'available',
+            'room-booked': room.state === 'booked'
+        };
+    }
+
+    async onRoomClick(roomId) {
+        await this.actionService.doAction({
+            type: 'ir.actions.act_window',
+            res_model: 'hotel.room',
+            res_id: roomId,
+            views: [[false, 'form']],
+            target: 'current',
+        });
     }
 }
 
-RoomDashboard.template = 'Hotel_Management.RoomDashboard';
-RoomDashboard.components = { Layout };
-RoomDashboard.defaultProps = {
-    ...getDefaultConfig(),
-};
-
-// Thay đổi key trong registry để khớp với tag trong action
-registry.category('actions').add('hotel_management.room_dashboard', RoomDashboard);
+// Đăng ký component như một widget
+registry.category("view_widgets").add("room_dashboard", {
+    component: RoomDashboard,
+});

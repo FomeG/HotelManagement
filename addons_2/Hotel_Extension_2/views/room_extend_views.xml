@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+
+    <record id="view_hotel_room_form_inherited" model="ir.ui.view">
+        <field name="name">hotel.room.form.inherited</field>
+        <field name="model">hotel.room</field>
+        <field name="inherit_id" ref="Hotel_Management.hotel_room_form_view" />
+        <field name="arch" type="xml">
+
+
+            <xpath expr="//group[2]" position="inside">
+                <field name="weekend_price" />
+            </xpath>
+
+        </field>
+    </record>
+
+</odoo>

@@ -22,13 +22,18 @@ class HotelRoom(models.Model):
     
     bed_type = fields.Selection([
         ('single', 'Single'),  # Single bed
-        ('double', 'Double')   # Double bed
+        ('double', 'Double'),   # Double bed
+        ('suite', 'Suite')
     ], string='Bed Type', required=True)  # Bed type (req)
+    
     price = fields.Float('Price')  # Room price
+    
     state = fields.Selection([
         ('available', 'Available'),  # Status: empty
-        ('booked', 'Booked')        # Status: booked
+        ('booked', 'Booked'),     # Status: booked
+        ('maintenance', 'Maintenace'),
     ], string='Status', default='available')  # Room status, default = available
+    
     feature_ids = fields.Many2many('hotel.room.feature', string='Features')  # Room features list (m2m)
     # last_booking_date = fields.Datetime('Last Booking Date')
     last_booking_date = fields.Date(string='Last Booking Date', compute='_compute_last_booking_date')

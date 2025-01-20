@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_hotel_dashboard" model="ir.ui.view">
+        <field name="name">hotel.management.dashboard</field>
+        <field name="model">hotel.management</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <field name="id" invisible="1"/>
+                    <widget name="room_dashboard" hotelId="id"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Action cho Room Dashboard -->
+    <record id="action_hotel_room_dashboard" model="ir.actions.act_window">
+        <field name="name">Room Dashboard</field>
+        <field name="res_model">hotel.management</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_hotel_dashboard"/>
+        <field name="target">main</field>
+    </record>
+
+
+</odoo>

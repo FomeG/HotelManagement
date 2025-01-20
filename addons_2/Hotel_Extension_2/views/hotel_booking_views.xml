@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inherit Form View -->
+    <record id="view_hotel_booking_form_inherit" model="ir.ui.view">
+        <field name="name">hotel.booking.form.inherit</field>
+        <field name="model">hotel.booking</field>
+        <field name="inherit_id" ref="Hotel_Management.hotel_booking_form_view" />
+        <field name="arch" type="xml">
+
+            <xpath expr="//header/button[@name='action_confirm']" position="after">
+                <button name="action_checkin"
+                    string="Check In"
+                    type="object"
+                    class="oe_highlight"
+                    invisible="state not in ['confirmed','checkout']" />
+                <button name="action_checkout"
+                    string="Check Out"
+                    type="object"
+                    class="oe_highlight"
+                    invisible="state not in ['confirmed','checkin']" />
+                <button name="%(Hotel_Extension_2.action_report_hotel_booking)d"
+                    string="Print Booking"
+                    type="action"
+                    class="oe_highlight"
+                    invisible="state not in ['checkout']" />
+            </xpath>
+
+
+            <xpath expr="//field[@name='check_out']" position="after">
+                <field name="nights" readonly="1" force_save="1" />
+                <field name="total_room_price" readonly="1" force_save="1" />
+            </xpath>
+
+            <xpath expr="//sheet/group" position="after">
+                <notebook invisible="state != 'checkin'">
+                    <page string="Products" name="booking_services">
+                        <field name="service_line_ids">
+                            <list editable="bottom">
+                                <field name="service_id" />
+                                <field name="available_qty" readonly="1" />
+                                <field name="quantity" />
+                                <field name="price_unit" readonly="1" />
+                                <field name="price_total" sum="Total" readonly="1" />
+                            </list>
+                        </field>
+                    </page>
+                    <!-- <page string="Sale Order Lines" name="sale_order_lines">
+                        <group>
+                            <field name="sale_order_id" readonly="1"/>
+                        </group>
+                        <field name="sale_order_line_ids" readonly="1">
+                            <list>
+                                <field name="product_id" />
+                                <field name="product_uom_qty" />
+                                <field name="price_unit" />
+                                <field name="price_subtotal" sum="Total" />
+                            </list>
+                        </field>
+                    </page> -->
+                </notebook>
+            </xpath>
+
+            <xpath expr="//sheet" position="after">
+                <div class="oe_chatter">
+                    <button name="action_view_sale"
+                        string="View Sale"
+                        type="object"
+                        class="btn btn-primary mt-2"
+                        invisible="state not in ['confirmed', 'checkout'] or not sale_order_id" />
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

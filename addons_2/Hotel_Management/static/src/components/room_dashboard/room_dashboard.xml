@@ -1,40 +1,48 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
-    <t t-name="hotel_management.RoomDashboard">
-        <div class="room-dashboard p-4">
-            <div class="stats-container d-flex justify-content-around mb-4">
-                <div class="stat-box text-center p-3 bg-white shadow rounded">
-                    <h3 class="text-primary" t-esc="state.stats.total"/>
-                    <p>Total Rooms</p>
-                </div>
-                <div class="stat-box text-center p-3 bg-white shadow rounded">
-                    <h3 class="text-success" t-esc="state.stats.available"/>
-                    <p>Available Rooms</p>
-                </div>
-                <div class="stat-box text-center p-3 bg-white shadow rounded">
-                    <h3 class="text-warning" t-esc="state.stats.booked"/>
-                    <p>Booked Rooms</p>
-                </div>
+    <t t-name="Hotel_Management.RoomDashboard" owl="1">
+        <div class="room-dashboard">
+            <div class="filters d-flex gap-2 mb-3">
+                <button t-attf-class="btn {{ state.filter === 'all' ? 'btn-primary' : 'btn-secondary' }}" 
+                        t-on-click="() => this.setFilter('all')">
+                    All Rooms
+                </button>
+                <button t-attf-class="btn {{ state.filter === 'available' ? 'btn-primary' : 'btn-secondary' }}"
+                        t-on-click="() => this.setFilter('available')">
+                    Available
+                </button>
+                <button t-attf-class="btn {{ state.filter === 'booked' ? 'btn-primary' : 'btn-secondary' }}"
+                        t-on-click="() => this.setFilter('booked')">
+                    Booked
+                </button>
             </div>
 
-            <div class="rooms-grid">
-                <div class="row">
-                    <t t-foreach="state.rooms" t-as="room" t-key="room.id">
-                        <div class="col-md-3 mb-3">
-                            <div class="room-card p-3 bg-white shadow rounded">
-                                <h5 class="room-number" t-esc="room.name"/>
-                                <p class="hotel-name text-muted" t-esc="room.hotel_id[1]"/>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span t-esc="room.bed_type"/>
-                                    <span class="price" t-esc="room.price + ' VND'"/>
-                                </div>
-                                <div t-attf-class="status-badge mt-2 p-1 text-center rounded {{room.state === 'available' ? 'bg-success' : 'bg-warning'}}">
-                                    <span class="text-white" t-esc="room.state"/>
-                                </div>
+            <div class="room-grid position-relative">
+                <t t-if="state.loading">
+                    <div class="position-absolute w-100 h-100 d-flex justify-content-center align-items-center">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                </t>
+                <t t-else="">
+                    <t t-foreach="filteredRooms" t-as="room" t-key="room.id">
+                        <div t-attf-class="{{getRoomClass(room)}}" 
+                             t-on-click="() => this.onRoomClick(room.id)">
+                            <h4 class="mb-3">Room <t t-esc="room.name"/></h4>
+                            <div class="room-info">
+                                <p class="mb-2"><i class="fa fa-bed me-2"/>Type: <t t-esc="room.bed_type"/></p>
+                                <p class="mb-2"><i class="fa fa-tag me-2"/>Price: <t t-esc="room.price"/> VND</p>
+                                <t t-if="room.last_booking_date">
+                                    <p class="mb-0"><i class="fa fa-calendar me-2"/>Last Booked: <t t-esc="room.last_booking_date"/></p>
+                                </t>
                             </div>
+                            <span t-attf-class="status-badge {{room.state}}">
+                                <t t-esc="room.state"/>
+                            </span>
                         </div>
                     </t>
-                </div>
+                </t>
             </div>
         </div>
     </t>

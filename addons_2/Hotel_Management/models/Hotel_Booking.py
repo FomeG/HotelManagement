@@ -17,7 +17,10 @@ class HotelBooking(models.Model):
     payment_amount = fields.Float('Payment Amount', readonly=True)
 
     name = fields.Char('Booking Description', required=True, tracking=True)
-    customer_name = fields.Char('Customer Name', tracking=True)
+    # Thay đổi trường customer_name từ Char thành Many2one
+    customer_name = fields.Many2one('res.partner', string='Customer', tracking=True, required=True)
+    
+    
     booking_date = fields.Date('Booking Date', default=fields.Date.today)
     hotel_id = fields.Many2one('hotel.management', 'Hotel')
     room_type = fields.Selection([
@@ -128,7 +131,11 @@ class HotelBooking(models.Model):
         return True
 
 
-
+    @api.onchange('room_id') 
+    def _onchange_room_id(self):
+        """Check if selected room is under maintenance"""
+        if self.room_id and self.room_id.state == 'maintainance':
+            raise ValidationError('Phòng này đang trong thời gian bảo trì, vui lòng chọn phòng khác!')
 
     def action_open_payment_wizard(self): # This one is to open the payment popup (target: 'new' is to open a new window (popup))
         """Open payment wizard"""
