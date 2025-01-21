@@ -25,8 +25,7 @@ class HotelService(models.Model):
         ondelete='cascade'  # if service gone, product gone too
     )
     
-    # Thêm vào class HotelService
-    qty_available = fields.Float('Quantity On Hand', related='product_tmpl_id.qty_available', readonly=True)
+
     virtual_available = fields.Float('Forecasted Quantity', related='product_tmpl_id.virtual_available', readonly=True)
     
     category_id = fields.Many2one('hotel.service.category', string='Category')

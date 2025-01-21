@@ -76,3 +76,22 @@ class HotelRoomProduct(models.Model):
             product_tmpls.unlink()
             
         return res
+    
+    
+    
+    def cron_check_maintaining_rooms(self):
+        """Automatically change room state from maintenance to available after 1 day"""
+        maintenance_rooms = self.search([
+            ('state', '=', 'maintenance')
+        ])
+        
+        if maintenance_rooms:
+            maintenance_rooms.write({
+                'state': 'available'
+            })
+            # Log message for tracking
+            for room in maintenance_rooms:
+                room.message_post(
+                    body=f"Room {room.name} state automatically changed from maintenance to available by system",
+                    message_type='notification'
+                )

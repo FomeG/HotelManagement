@@ -52,13 +52,13 @@
     </record>
 
     <record id="action_hotel_service_inventory" model="ir.actions.act_window">
-        <field name="name">Service Inventory</field>
+        <field name="name">Hotel Warehouse</field>
         <field name="res_model">hotel.service.inventory</field>
         <field name="view_mode">list,form</field>
     </record>
 
     <menuitem id="menu_hotel_service_inventory"
-        name="Service Inventory"
+        name="Hotel Warehouse"
         parent="Hotel_Management.menu_hotel_root"
         action="action_hotel_service_inventory"
         sequence="35" />

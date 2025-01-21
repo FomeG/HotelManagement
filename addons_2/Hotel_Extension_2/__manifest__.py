@@ -15,8 +15,6 @@
     'depends': ['Hotel_Management', 'sale', 'product','web','stock'],
     'data': [
         'reports/hotel_booking_report_template.xml',
-        'reports/hotel_booking_report.xml',
-        
         
         'security/ir.model.access.csv',
         'views/hotel_booking_views.xml',
@@ -24,7 +22,7 @@
         'views/room_extend_views.xml',
         'views/hotel_service_inventory_views.xml',
         
-        
+        'data/cronjob.xml',
         
     ],
 }

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Room Report Views -->
+    <record id="view_hotel_room_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.room.report.pivot</field>
+        <field name="model">hotel.room.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Room Availability Analysis">
+                <field name="date" type="row"/>
+                <field name="state" type="col"/>
+                <field name="hotel_id" type="row"/>
+                <field name="bed_type" type="row"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hotel_room_report_graph" model="ir.ui.view">
+        <field name="name">hotel.room.report.graph</field>
+        <field name="model">hotel.room.report</field>
+        <field name="arch" type="xml">
+            <graph string="Room Status">
+                <field name="date"/>
+                <field name="state"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_hotel_room_report" model="ir.actions.act_window">
+        <field name="name">Room Availability Report</field>
+        <field name="res_model">hotel.room.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+    <!-- Revenue Report Views -->
+    <record id="view_hotel_revenue_report_pivot" model="ir.ui.view">
+        <field name="name">hotel.revenue.report.pivot</field>
+        <field name="model">hotel.revenue.report</field>
+        <field name="arch" type="xml">
+            <pivot string="Revenue Analysis">
+                <field name="date" interval="day" type="row"/>
+                <field name="hotel_id" type="col"/>
+                <field name="room_revenue" type="measure"/>
+                <field name="service_revenue" type="measure"/>
+                <field name="total_revenue" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="view_hotel_revenue_report_graph" model="ir.ui.view">
+        <field name="name">hotel.revenue.report.graph</field>
+        <field name="model">hotel.revenue.report</field>
+        <field name="arch" type="xml">
+            <graph string="Revenue Analysis">
+                <field name="date"/>
+                <field name="total_revenue" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_hotel_revenue_report" model="ir.actions.act_window">
+        <field name="name">Revenue Report</field>
+        <field name="res_model">hotel.revenue.report</field>
+        <field name="view_mode">pivot,graph</field>
+        <field name="context">{'search_default_this_month': 1}</field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_hotel_reports"
+        name="Reports"
+        parent="Hotel_Management.menu_hotel_root"
+        sequence="50"/>
+
+    <menuitem id="menu_hotel_room_report"
+        name="Room Availability"
+        action="action_hotel_room_report"
+        parent="menu_hotel_reports"
+        sequence="10"/>
+
+    <menuitem id="menu_hotel_revenue_report"
+        name="Revenue Analysis"
+        action="action_hotel_revenue_report"
+        parent="menu_hotel_reports"
+        sequence="20"/>
+</odoo>

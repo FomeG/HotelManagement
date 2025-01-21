@@ -1,3 +1,9 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 Hotel_Extension_2.access_hotel_service,access_hotel_service,Hotel_Extension_2.model_hotel_service,base.group_user,1,1,1,1
 Hotel_Extension_2.access_hotel_booking_service_line,access_hotel_booking_service_line,Hotel_Extension_2.model_hotel_booking_service_line,base.group_user,1,1,1,1
+
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_hotel_room_report_user,hotel.room.report.user,model_hotel_room_report,Hotel_Management.group_hotel_employee,1,0,0,0
+access_hotel_room_report_manager,hotel.room.report.manager,model_hotel_room_report,Hotel_Management.group_hotel_manager,1,0,0,0
+access_hotel_revenue_report_user,hotel.revenue.report.user,model_hotel_revenue_report,Hotel_Management.group_hotel_employee,1,0,0,0
+access_hotel_revenue_report_manager,hotel.revenue.report.manager,model_hotel_revenue_report,Hotel_Management.group_hotel_manager,1,1,0,0

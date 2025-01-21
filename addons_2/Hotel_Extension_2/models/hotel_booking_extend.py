@@ -24,6 +24,25 @@ class HotelBookingExtend(models.Model):
     # Extra services for room
     service_line_ids = fields.One2many('hotel.booking.service.line', 'booking_id', string='Services')
 
+    # Thêm vào class HotelBookingExtend
+    pos_order_ids = fields.One2many('pos.order', 'hotel_booking_id', string='POS Orders')
+    pos_order_count = fields.Integer(compute='_compute_pos_order_count')
+
+    @api.depends('pos_order_ids')
+    def _compute_pos_order_count(self):
+        for booking in self:
+            booking.pos_order_count = len(booking.pos_order_ids)
+
+    def action_view_pos_orders(self):
+        self.ensure_one()
+        return {
+            'name': 'POS Orders',
+            'type': 'ir.actions.act_window',
+            'res_model': 'pos.order',
+            'view_mode': 'tree,form',
+            'domain': [('hotel_booking_id', '=', self.id)],
+        }
+        
     @api.depends('check_in', 'check_out')
     def _compute_nights(self):
         # Ez math: checkout - checkin = total nights

@@ -200,7 +200,6 @@
         </t>
     </template>
 
-
     <!-- Service Order Template -->
     <template id="portal_my_services" name="My Hotel Services">
         <t t-call="portal.portal_layout">
@@ -319,7 +318,6 @@
         </t>
     </template>
 
-
     <!-- Add menu items -->
     <template id="portal_my_home_menu_hotel" name="Portal My Home : hotel menu entries"
         inherit_id="portal.portal_breadcrumbs" priority="20">
@@ -376,7 +374,6 @@
             </t>
         </t>
     </template>
-
 
     <!-- Add menu items to portal home page -->
     <template id="portal_my_home_hotel" name="Portal My Home : hotel entries"
